@@ -35,7 +35,7 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/completed',
       method: HttpMethod.Patch,
-      handler: this.changeStatus,
+      handler: this.completedAppeal,
       middlewares: [
         new ValidateDtoMiddleware(AnswerDto),
         new ValidateIdAppealMiddleware()
@@ -71,16 +71,14 @@ export class DispatcherController extends BaseController {
   public async getAppeal(_req: Request, res: Response): Promise<void> {
     const dataAppeal = await this.dispatcherService.getAppeal();
 
-    const result = dataAppeal ?? 'Новых обращений не поступало.';
-
-    this.created(res, fillObject(AppealRdo, result));
+    this.created(res, fillObject(AppealRdo, dataAppeal));
   }
 
-  public async changeStatus(
+  public async completedAppeal(
     {body}: Request<RequestParams, RequestBody, AnswerDto>,
     res: Response
   ): Promise<void> {
-    const resultAnswer = await this.dispatcherService.changeStatus(body);
+    const resultAnswer = await this.dispatcherService.completedAppeal(body);
 
     this.created(res, resultAnswer);
   }

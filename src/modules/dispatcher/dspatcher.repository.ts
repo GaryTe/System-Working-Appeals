@@ -39,7 +39,7 @@ export class DispatcherRepository implements DispatcherRepositoryInterface {
     return dataAppealsList.find((item: DataAppeal[]) => item).find((item: DataAppeal) => item);
   }
 
-  public async changeStatus(dto: AnswerDto): Promise<DataAppeal> {
+  public async completedAppeal(dto: AnswerDto): Promise<DataAppeal> {
     const dataAppealsList = await appDataSource.manager.query(`
       UPDATE appeal
       SET status = '${StatusAppeal.Completed}'

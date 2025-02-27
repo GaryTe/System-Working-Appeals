@@ -12,5 +12,6 @@ export const Component = {
   AppealRepository: Symbol.for('AppealRepository'),
   DispatcherController: Symbol.for('DispatcherController'),
   DispatcherService: Symbol.for('DispatcherService'),
-  DispatcherRepository: Symbol.for('DispatcherRepository')
+  DispatcherRepository: Symbol.for('DispatcherRepository'),
+  DataSourceMail: Symbol.for('dataSourceMail')
 } as const;
