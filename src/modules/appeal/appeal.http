@@ -3,8 +3,8 @@ POST  http://localhost:3000/appeal/ HTTP/1.1
 Content-Type: application/json
 
 {
-  "client": "Варламов Алексей Генадивич",
-  "email": "Varlamov@1984VA.com",
+  "client": "Мурашов Алексей Александрович",
+  "email": "Alex@1984MA.com",
   "topicAppeal": "Замена паспорта.",
   "appeal": "Прошу поменять паспорт."
 }

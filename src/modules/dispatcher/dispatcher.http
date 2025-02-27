@@ -7,7 +7,7 @@ PATCH   http://localhost:3000/dispatcher/completed HTTP/1.1
 Content-Type: application/json
 
 {
-  "id": "6888d82b-9264-4a4e-b787-53186c61dc81",
+  "id": "83942391-6a9c-48cc-86b8-16408c8228aa",
   "answer": "Вы можете явится 03.03.25, для получения паспорта."
 }
 
@@ -27,7 +27,7 @@ PATCH   http://localhost:3000/dispatcher/canceled/all/appeals HTTP/1.1
 Content-Type: application/json
 
 {
-  "answer": "Обращения отклонено в связи с технической неполадкой."
+  "answer": "Обращения отклонено в связи с технической неполадкой. После устранения будет принято в обработку. Приносим наши извинения."
 }
 
 ###

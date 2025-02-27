@@ -23,4 +23,7 @@ export class AppealRdo {
 
   @Expose()
   public status!: StatusAppeal;
+
+  @Expose()
+  public statusResponse!: string;
 }
