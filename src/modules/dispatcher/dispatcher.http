@@ -1,0 +1,35 @@
+# Take the appeal for job
+Get  http://localhost:3000/dispatcher/ HTTP/1.1
+
+###
+# Complete the processing of the appeal
+PATCH   http://localhost:3000/dispatcher/completed HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "6888d82b-9264-4a4e-b787-53186c61dc81",
+  "answer": "Вы можете явится 03.03.25, для получения паспорта."
+}
+
+###
+# The canceled of the appeal
+PATCH   http://localhost:3000/dispatcher/canceled HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": "83942391-6a9c-48cc-86b8-16408c8228aa",
+  "answer": "Ваше оброщение не рассмотрено, по причине регистрации в другом районе."
+}
+
+###
+# Cancel all appeals that are in the status in work
+PATCH   http://localhost:3000/dispatcher/canceled/all/appeals HTTP/1.1
+Content-Type: application/json
+
+{
+  "answer": "Обращения отклонено в связи с технической неполадкой."
+}
+
+###
+# Get a list of appeals by data
+GET  http://localhost:3000/dispatcher/search/appeals?from=21.02.2025&to=23.01.2025 HTTP/1.1

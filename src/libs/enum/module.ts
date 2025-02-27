@@ -5,3 +5,10 @@ export enum HttpMethod {
   Patch = 'patch',
   Put = 'put',
 }
+
+export enum StatusAppeal {
+  New = 'new',
+  'In work' = 'in work',
+  Completed = 'completed',
+  Canceled = 'canceled'
+}

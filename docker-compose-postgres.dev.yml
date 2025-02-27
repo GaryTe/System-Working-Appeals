@@ -1,0 +1,41 @@
+services:
+  system-working-appeals.postgres:
+    image: postgres:14-alpine
+    container_name: system-working-appeals.postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - ${POSTGRES_PORT}:5432
+    volumes:
+      - system.working.appeals:/var/lib/postgres/data
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d {POSTGRES_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    networks:
+      - system-working-appeals
+
+  system-working-appeals.pgadmin:
+    image: dpage/pgadmin4
+    container_name: system-working-appeals.pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${POSTGRES_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+    ports:
+      - 8082:80
+    networks:
+      - system-working-appeals
+
+volumes:
+  system.working.appeals:
+
+networks:
+  system-working-appeals:
+      driver: bridge

@@ -1,3 +1,5 @@
+import {DataSource} from 'typeorm';
+
 import {ApplicationConfig} from '../interface/index.js';
 
 export type Constraints = {
@@ -11,3 +13,5 @@ export type ValidationErrorField = {
   value: string;
   messages: string[];
 };
+
+export type GetDataSource = (host: string, port: number, username: string, password: string, database: string) => Promise<DataSource>

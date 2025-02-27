@@ -1,0 +1,8 @@
+services:
+  system-working-appeals.fakesmtp:
+    image: gessnerfl/fake-smtp-server
+    container_name: "system.working.appeals.fakesmtp"
+    hostname: "fakesmtp"
+    ports:
+      - ${SMTP_PORT}:8025
+      - 1083:8080
