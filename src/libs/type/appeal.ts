@@ -8,4 +8,10 @@ export type DataAppeal = {
   topic_appeal: string;
   appeal: string;
   status: StatusAppeal;
+  statusResponse: string;
+};
+
+export type DataCancelAllAppeals = {
+  statusResponse: string[],
+  resultOperation: string
 };

@@ -1,4 +1,5 @@
 import {DataSource} from 'typeorm';
+import {Transporter} from 'nodemailer';
 
 import {ApplicationConfig} from '../interface/index.js';
 
@@ -15,3 +16,7 @@ export type ValidationErrorField = {
 };
 
 export type GetDataSource = (host: string, port: number, username: string, password: string, database: string) => Promise<DataSource>
+export type DataSourceMail = (host: string, port: number, secure: boolean, auth: {
+  user: string;
+  pass: string;
+}) => Promise<Transporter>;

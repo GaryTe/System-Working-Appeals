@@ -8,7 +8,7 @@ import {
   ApplicationConfig,
   ExceptionFilter
 } from '../libs/interface/index.js';
-import {GetVariableEnvironmentFroApp, GetDataSource} from '../libs/type/index.js';
+import {GetVariableEnvironmentFroApp, GetDataSource, DataSourceMail} from '../libs/type/index.js';
 import {AppealController} from '../modules/appeal/appeal.controller.js';
 import {DispatcherController} from '../modules/dispatcher/dispatcher.controller.js';
 
@@ -26,7 +26,8 @@ export class App implements Application {
     @inject(Component.AppExceptionFilter) private readonly appExceptionFilter: ExceptionFilter,
     @inject(Component.DataSource) private readonly dataSource: GetDataSource,
     @inject(Component.AppealController) private readonly appealController: AppealController,
-    @inject(Component.DispatcherController) private readonly dispatcherController: DispatcherController
+    @inject(Component.DispatcherController) private readonly dispatcherController: DispatcherController,
+    @inject(Component.DataSourceMail) private readonly dataSourceMail: DataSourceMail,
   ) {
     this.server = express();
     this.config = this.appConfig();
@@ -45,6 +46,23 @@ export class App implements Application {
       .then(() => {
         this.appLogger.info('Connection established to Postgres !!!');
       })
+      .catch((error) => {
+        throw new Error (error);
+      });
+  }
+
+  private async initNodemailer() {
+    await this.dataSourceMail(
+      this.config.host as string,
+      this.config.fakesmtpPort as number,
+      false,
+      {
+        user: this.config.postgresUserName as string,
+        pass: this.config.postgresPassword as string
+      }
+    ).then(() => {
+      this.appLogger.info('Connection established to Nodemailer !!!');
+    })
       .catch((error) => {
         throw new Error (error);
       });
@@ -76,6 +94,9 @@ export class App implements Application {
 
     this.appLogger.info('Try to connect to Postgres.');
     await this.initPostgresDb();
+
+    this.appLogger.info('Try to connect to Nodemailer.');
+    await this.initNodemailer();
 
     this.appLogger.info('Init express middleware');
     await this.initMiddleware();
