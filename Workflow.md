@@ -10,9 +10,33 @@ npm install
 
 Команда запустит процесс установки зависимостей проекта из **npm**.
 
+### Переменные окружения для проекта POST-PAGE
+
+HOST=localhost - IP для сервера, БД, fake-smtp-server, и http запросов к серверу.
+PORT=3000 - Для старта сервера.
+POSTGRES_DB=post.page - Для настройки конфигурации Postgres.
+POSTGRES_USER=vladislav - Для настройки конфигурации Postgres.
+POSTGRES_PASSWORD=Vlad.Vankov - Для настройки конфигурации Postgres
+PGADMIN_EMAIL=v4nkov.v@yandex.ru - Для настройки конфигурации Postgres
+POSTGRES_PORT=4000 - Для старта БД.
+SMTP_PORT=8025 - Для настройки конфигурации fake-smtp-server. Установите порт 8085 для соединения к SMTP-серверу !!!
+
 ### Сценарии
 
+#### Создание контейнера Postgres, fakesmtp
+
+```bash in Ubuntu
+docker compose --file ./docker-compose-postgres.dev.yml --env-file .env --project-name "system_working_appeals" up -d
+docker compose --file ./docker-compose-fakesmtp.dev.yml --env-file .env --project-name "system_working_appeals" up -d
+```
+
 В `package.json` предопределено несколько сценариев.
+
+#### Запуск проекта в режиме разработки и без компиляции
+
+```bash
+npm run start:dev
+```
 
 #### Скомпилировать проект
 
@@ -74,12 +98,12 @@ npm start
 
 ### Файл `Readme.md`
 
-Инструкции по работе с учебным репозиторием.
+Инструкции по работе с проектом репозитория.
 
 ### Файл `Contributing.md`
 
-Советы и инструкции по внесению изменений в учебный репозиторий.
+Советы и инструкции по внесению изменений в проект репозитория.
 
 ### Остальное
 
-Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание или наставник.
+Все остальные файлы в проекте являются служебными. Пожалуйста, не удаляйте и не изменяйте их самовольно. Только если того требует задание.

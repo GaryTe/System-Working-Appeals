@@ -6,8 +6,8 @@ import {DispatcherServiceInterface, DispatcherRepositoryInterface} from '../../l
 import {AnswerDto} from './dto/answer.dto.js';
 import {GeneralAnswerDto} from './dto/general-answer.dto.js';
 import {QueryParamsDto} from './dto/query-params.dto.js';
-import {transporter} from '../../libs/mail/index.js';
-import {SENDER, SUBJECT} from '../../libs/const/index.js';
+import {sendMail} from '../../libs/mail/index.js';
+import {matchShiftValue} from '../../libs/util/index.js';
 
 @injectable()
 export class DispatcherService implements DispatcherServiceInterface {
@@ -22,18 +22,11 @@ export class DispatcherService implements DispatcherServiceInterface {
       return 'Новых обращений не поступало.';
     }
 
-    const result = await transporter.sendMail({
-      from: `${SENDER}`,
-      to: `${dataAppeal.email}`,
-      subject: `${SUBJECT}`,
-      text: `${dataAppeal.client}. Ваше обращение в работе.
-      Ответ будет направлен Вам на email ${dataAppeal.email}.
-      Телефон Call Centra: +7(000)000-00-00`
-    })
-      .then((response) => response)
-      .catch(() => null);
-
-    const statusResponse = result ? `Ответ направлен на email: ${dataAppeal.email}, кому: ${dataAppeal.client}.` : `Ответ не направлен на email: ${dataAppeal.email}, кому: ${dataAppeal.client}.`;
+    const statusResponse = await sendMail(
+      dataAppeal,
+      `Ваше обращение в работе.
+      Ответ будет направлен Вам на email ${dataAppeal.email}.`
+    );
 
     return {
       ...dataAppeal,
@@ -42,37 +35,17 @@ export class DispatcherService implements DispatcherServiceInterface {
   }
 
   public async completedAppeal(dto: AnswerDto): Promise<string> {
-    const {email, client} = await this.dispatcherRepository.completedAppeal(dto);
+    const dataAppeal = await this.dispatcherRepository.completedAppeal(dto);
 
-    const result = await transporter.sendMail({
-      from: `${SENDER}`,
-      to: `${email}`,
-      subject: `${SUBJECT}`,
-      text: `${client}. ${dto.answer}
-      Телефон Call Centra: +7(000)000-00-00`
-    })
-      .then((response) => response)
-      .catch(() => null);
-
-    const statusResponse = result ? `Ответ по обращению под номером ${dto.id}, направлено на email: ${email}, получатель ${client}.` : `Ответ не направлен на email: ${email}, кому: ${client}.`;
+    const statusResponse = await sendMail(dataAppeal, dto.answer);
 
     return statusResponse;
   }
 
   public async cancelAppeal(dto: AnswerDto): Promise<string> {
-    const {email, client} = await this.dispatcherRepository.cancelAppeal(dto);
+    const dataAppeal = await this.dispatcherRepository.cancelAppeal(dto);
 
-    const result = await transporter.sendMail({
-      from: `${SENDER}`,
-      to: `${email}`,
-      subject: `${SUBJECT}`,
-      text: `${client}. ${dto.answer}
-      Телефон Call Centra: +7(000)000-00-00`
-    })
-      .then((response) => response)
-      .catch(() => null);
-
-    const statusResponse = result ? `Ответ по обращению под номером ${dto.id}, направлено на email: ${email}, получатель ${client}.` : `Ответ не направлен на email: ${email}, кому: ${client}.`;
+    const statusResponse = await sendMail(dataAppeal, dto.answer);
 
     return statusResponse;
   }
@@ -86,17 +59,7 @@ export class DispatcherService implements DispatcherServiceInterface {
     }
 
     for await (const appeal of dataAppealsList) {
-      const result = await transporter.sendMail({
-        from: `${SENDER}`,
-        to: `${appeal.email}`,
-        subject: `${SUBJECT}`,
-        text: `${appeal.client}. ${dto.answer}
-        Телефон Call Centra: +7(000)000-00-00`
-      })
-        .then((response) => response)
-        .catch(() => null);
-
-      const statusResponse = result ? `Ответ по обращению под номером ${appeal.id}, направлено на email: ${appeal.email}, получатель ${appeal.client}.` : `Ответ не направлен на email: ${appeal.email}, кому: ${appeal.client}.`;
+      const statusResponse = await sendMail(appeal, dto.answer);
       statusResponsesList.push(statusResponse);
     }
 
@@ -110,10 +73,7 @@ export class DispatcherService implements DispatcherServiceInterface {
   }
 
   public async getAppealsByData(dto: QueryParamsDto): Promise<DataAppeal[] | []> {
-    const queryParams = {
-      from: dto.from < dto.to ? dto.from : dto.to,
-      to: dto.to > dto.from ? dto.to : dto.from
-    };
+    const queryParams = dto.to ? matchShiftValue(dto) : dto;
 
     const dataAppealsList = await this.dispatcherRepository.getAppealsByData(queryParams);
 

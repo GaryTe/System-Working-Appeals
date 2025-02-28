@@ -55,7 +55,10 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/canceled/all/appeals',
       method: HttpMethod.Patch,
-      handler: this.cancelAllAppeals
+      handler: this.cancelAllAppeals,
+      middlewares: [
+        new ValidateDtoMiddleware(GeneralAnswerDto),
+      ]
     });
 
     this.addRoute({
@@ -71,7 +74,7 @@ export class DispatcherController extends BaseController {
   public async getAppeal(_req: Request, res: Response): Promise<void> {
     const dataAppeal = await this.dispatcherService.getAppeal();
 
-    this.created(res, fillObject(AppealRdo, dataAppeal));
+    this.ok(res, fillObject(AppealRdo, dataAppeal));
   }
 
   public async completedAppeal(
@@ -114,6 +117,6 @@ export class DispatcherController extends BaseController {
 
     const resultAnswer = dataAppealsList.length !== 0 ? dataAppealsList : 'На полученные даты не чего нет в базе данных. Введите другие даты.';
 
-    this.created(res, fillObject(AppealRdo, resultAnswer));
+    this.ok(res, fillObject(AppealRdo, resultAnswer));
   }
 }

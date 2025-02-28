@@ -1,0 +1,303 @@
+openapi: '3.0.0'
+info:
+  title: API сервер для проекта «system-working-appeals».
+  description: Список ресурсов и маршрутов сервера «system-working-appeals».
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  version: '1.0'
+tags:
+  - name: appeal
+    description: Действия по созданию обращения.
+  - name: dispatcher
+    description: Действия по обработке обращения.
+
+paths:
+  /appeal/:
+    post:
+      tags:
+        - appeal
+      summary: Создать обращение
+      description: Гражданин заполняет поля информацией и отправляет обращение.
+
+      requestBody:
+        description: 'Передаваемая информация:
+                      Поле "client" обязательное. Указать Ф.И.О.
+                      Поле "email" обязательное. Валидный адрес электронной почты.
+                      Поле "topicAppeal" обязательное. Указать причину обращения.
+                      Поле "appeal" обязательное. Текст обращения.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppealDto'
+        required: true
+
+      responses:
+        "201":
+          description: 'Обращения создано. Поле "statusResponse" получает следующее значение от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealRdo'
+
+        "400":
+          description: Гражданиин допустил ошибку в отправленной информации.
+
+        "500":
+          description: На сервере произошла ошибка.
+
+  /dispatcher/:
+    get:
+      tags:
+        - dispatcher
+      summary: Диспетчер берет обращение в работу.
+      description: Статус обращения меняется на "in work"
+
+      responses:
+        "200":
+          description: 'Обращения обработано диспетчером. Поле "statusResponse" получает следующее значение от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppealRdo'
+
+        "500":
+          description: На сервере произошла ошибка.
+
+  /dispatcher/completed:
+    patch:
+      tags:
+        - dispatcher
+      summary: Обработка обращения завершена.
+      description: Статус обращения меняется на "completed"
+
+      requestBody:
+        description: 'Передаваемая информация диспетчером:
+                      Поле "id" обязательное. Указать уникальный номер id документа или номер документа с поля "numberAppeal".
+                      Поле "answer" обязательное. Текст ответа по обращению.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerDto'
+        required: true
+
+      responses:
+        "201":
+          description: 'Обращения обработано диспетчером. Ответ зависит от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Ответ по обращению под номером "56748-fr655-78hyh", направлено на email: "Alex@1984MA.com", получатель "Мурашов Алексей Александрович".'
+
+        "400":
+          description: Ошибку в отправленной информации.
+
+        "404":
+          description: Ошибка в правильности введеного id документа в поле "id" объекта запроса
+
+        "500":
+          description: На сервере произошла ошибка.
+
+  /dispatcher/canceled:
+    patch:
+      tags:
+        - dispatcher
+      summary: Обработка обращения отменено.
+      description: Статус обращения меняется на "canceled"
+
+      requestBody:
+        description: 'Передаваемая информация диспетчером:
+                      Поле "id" обязательное. Указать уникальный номер id документа или номер документа с поля "numberAppeal".
+                      Поле "answer" обязательное. Текст ответа по обращению (причина отмены).'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AnswerDto'
+        required: true
+
+      responses:
+        "201":
+          description: 'Обращения обработано диспетчером. Ответ зависит от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            text/plain:
+              schema:
+                type: string
+                example: 'Ответ по обращению под номером "56748-fr655-78hyh", направлено на email: "Alex@1984MA.com", получатель "Мурашов Алексей Александрович".'
+
+        "400":
+          description: Ошибку в отправленной информации.
+
+        "404":
+          description: Ошибка в правильности введеного id документа в поле "id" объекта запроса
+
+        "500":
+          description: На сервере произошла ошибка.
+
+  /dispatcher/canceled/all/appeals:
+    patch:
+      tags:
+        - dispatcher
+      summary: Отменить все обращения.
+      description: Отменить все обращения, которые находятся в статусе "in work". Статус обращения меняется на "canceled"
+
+      requestBody:
+        description: 'Передаваемая информация диспетчером:
+                      Поле "answer" обязательное. Текст ответа по обращению (причина отмены).'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneralAnswerDto'
+        required: true
+
+      responses:
+        "201":
+          description: 'Обращения обработано диспетчером. Поле "statusResponse" получает следующий массив значений от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/resultAnswer'
+
+        "400":
+          description: Ошибку в отправленной информации.
+
+        "500":
+          description: На сервере произошла ошибка.
+
+  /dispatcher/search/appeals:
+    get:
+      tags:
+        - dispatcher
+      summary: Получить список обращений по конкретной дате и по диапозону дат.
+      description: 'Получить список обращений с возможностью фильтрации по конкретной дате и по диапозону дат.
+                    Передаваемая информация диспетчером в дополнительные параметры строки запроса:
+                      "from" обязательное. Формат запроса даты dd.mm.yyyy.
+                      "to" необязательное. Формат запроса даты dd.mm.yyyy.'
+
+      responses:
+        "201":
+          description: 'Обращения обработано диспетчером. Поле "statusResponse" получает следующее значение от следующих условий:
+                        Сообщение доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.".
+                        Сообщение не доставлено пользователю на email следующего вида: "Ответ по обращению под номером 56748-fr655-78hyh, не направлен на email: Alex@1984MA.com, получатель: Мурашов Алексей Александрович.".
+                        Полю "type" присваивается одно значение из следующих перечислений: new, in work, completed, canceled.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/appealsList'
+
+        "400":
+          description: Ошибку в заданой дате или в диапозоне дат.
+
+        "500":
+          description: На сервере произошла ошибка.
+components:
+  schemas:
+    AppealDto:
+      type: object
+
+      properties:
+        client:
+          type: string
+          example: Мурашов Алексей Александрович
+
+        email:
+          type: string
+          example: Alex@1984MA.com
+
+        topicAppeal:
+          type: string
+          example: Замена паспорта.
+
+        appeal:
+          type: string
+          example: Прошу поменять паспорт.
+
+
+    AppealRdo:
+      type: object
+
+      properties:
+        numberAppeal:
+          type: string
+          example: 56748-fr655-78hyh
+
+        dataPublication:
+          type: string
+          example: 2019-01-25T00:00:00-02:00Z.
+
+        client:
+          type: string
+          example: Мурашов Алексей Александрович
+
+        email:
+          type: string
+          example: Alex@1984MA.com
+
+        topicAppeal:
+          type: string
+          example: Замена паспорта.
+
+        appeal:
+          type: string
+          example: Прошу поменять паспорт.
+
+        status:
+          type: string
+          example: 'new'
+
+        statusResponse:
+          type: string
+          example: 'Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.'
+
+    AnswerDto:
+      type: object
+
+      properties:
+        id:
+          type: string
+          example: 56748-fr655-78hyh
+
+        answer:
+          type: string
+          example: Вы можете явиться 03.03.25, для получения паспорта.
+
+    GeneralAnswerDto:
+      type: object
+
+      properties:
+        answer:
+          type: string
+          example: Обращения отклонено в связи с технической неполадкой. После устранения будет принято в обработку. Приносим наши извинения.
+
+    resultAnswer:
+      type: object
+
+      properties:
+        statusResponse:
+          type: array
+          example: ['Ответ по обращению под номером 56748-fr655-78hyh, направлено на email: Alex@1984MA.com, получатель Мурашов Алексей Александрович.']
+
+        resultOperation:
+          type: string
+          example: 'Обращения под номерами: 56748-fr655-78hyh, 56748-ttr6567-78hyh отменены.'
+
+    appealsList:
+      type: array
+
+      $ref: '#/components/schemas/AppealDto'
+

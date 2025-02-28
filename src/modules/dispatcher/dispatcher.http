@@ -7,7 +7,7 @@ PATCH   http://localhost:3000/dispatcher/completed HTTP/1.1
 Content-Type: application/json
 
 {
-  "id": "83942391-6a9c-48cc-86b8-16408c8228aa",
+  "id": "1356e483-8321-4486-ba59-a816df6c7d13",
   "answer": "Вы можете явится 03.03.25, для получения паспорта."
 }
 
@@ -17,7 +17,7 @@ PATCH   http://localhost:3000/dispatcher/canceled HTTP/1.1
 Content-Type: application/json
 
 {
-  "id": "83942391-6a9c-48cc-86b8-16408c8228aa",
+  "id": "1356e483-8321-4486-ba59-a816df6c7d13",
   "answer": "Ваше оброщение не рассмотрено, по причине регистрации в другом районе."
 }
 
@@ -32,4 +32,4 @@ Content-Type: application/json
 
 ###
 # Get a list of appeals by data
-GET  http://localhost:3000/dispatcher/search/appeals?from=21.02.2025&to=23.01.2025 HTTP/1.1
+GET  http://localhost:3000/dispatcher/search/appeals?from=27.02.2025&to=23.02.2025 HTTP/1.1
