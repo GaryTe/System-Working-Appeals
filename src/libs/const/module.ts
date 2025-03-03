@@ -5,3 +5,4 @@ export const LENGTH_TEXT = 1;
 export const REG_DATA = /^\d{2}\.\d{2}\.\d{4}$/;
 export const SENDER = 'mfc@volgograd.com';
 export const SUBJECT = 'От центра обработки обращений.';
+export const ORIGIN_HEADERS_LIST = ['https://dzen.ru'];

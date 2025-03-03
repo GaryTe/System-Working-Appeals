@@ -1,9 +1,11 @@
 # Take the appeal for job
 Get  http://localhost:3000/dispatcher/ HTTP/1.1
+Origin: https://dzen.ru
 
 ###
 # Complete the processing of the appeal
-PATCH   http://localhost:3000/dispatcher/completed HTTP/1.1
+PATCH    http://localhost:3000/dispatcher/completed HTTP/1.1
+Origin: https://dzen.ru
 Content-Type: application/json
 
 {
@@ -14,6 +16,7 @@ Content-Type: application/json
 ###
 # The canceled of the appeal
 PATCH   http://localhost:3000/dispatcher/canceled HTTP/1.1
+Origin: https://dzen.ru
 Content-Type: application/json
 
 {
@@ -24,6 +27,7 @@ Content-Type: application/json
 ###
 # Cancel all appeals that are in the status in work
 PATCH   http://localhost:3000/dispatcher/canceled/all/appeals HTTP/1.1
+Origin: https://dzen.ru
 Content-Type: application/json
 
 {
@@ -33,3 +37,4 @@ Content-Type: application/json
 ###
 # Get a list of appeals by data
 GET  http://localhost:3000/dispatcher/search/appeals?from=27.02.2025&to=23.02.2025 HTTP/1.1
+Origin: https://dzen.ru

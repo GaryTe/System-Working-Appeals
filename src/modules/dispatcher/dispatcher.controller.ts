@@ -1,5 +1,6 @@
 import { inject, injectable } from 'inversify';
 import { Request, Response } from 'express';
+import {StatusCodes} from 'http-status-codes';
 
 import { BaseController } from '../../libs/abstract-class/index.js';
 import { Component, HttpMethod } from '../../libs/enum/index.js';
@@ -15,6 +16,8 @@ import {
   ValidateQueryMiddleware
 } from '../../libs/middleware/index.js';
 import {QueryParamsDto} from './dto/query-params.dto.js';
+import {ORIGIN_HEADERS_LIST} from '../../libs/const/index.js';
+import {HttpError} from '../../libs/exception-filter/index.js';
 
 @injectable()
 export class DispatcherController extends BaseController {
@@ -29,12 +32,34 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/',
       method: HttpMethod.Get,
+      optionsCors: {
+        origin: function (origin, callback) {
+          if (origin === undefined || !ORIGIN_HEADERS_LIST.includes(origin)) {
+            return callback(new HttpError(
+              StatusCodes.BAD_REQUEST,
+              `Resource has been bloked by CORS policy: The 'Access-Control-Allow-Origin' header has a value ${origin} that is not equal to the supplied origin. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.`
+            ));
+          }
+          callback(null, true);
+        }
+      },
       handler: this.getAppeal
     });
 
     this.addRoute({
       path: '/completed',
       method: HttpMethod.Patch,
+      optionsCors: {
+        origin: function (origin, callback) {
+          if (origin === undefined || !ORIGIN_HEADERS_LIST.includes(origin)) {
+            return callback(new HttpError(
+              StatusCodes.BAD_REQUEST,
+              `Resource has been bloked by CORS policy: The 'Access-Control-Allow-Origin' header has a value ${origin} that is not equal to the supplied origin. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.`
+            ));
+          }
+          callback(null, true);
+        }
+      },
       handler: this.completedAppeal,
       middlewares: [
         new ValidateDtoMiddleware(AnswerDto),
@@ -45,6 +70,17 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/canceled',
       method: HttpMethod.Patch,
+      optionsCors: {
+        origin: function (origin, callback) {
+          if (origin === undefined || !ORIGIN_HEADERS_LIST.includes(origin)) {
+            return callback(new HttpError(
+              StatusCodes.BAD_REQUEST,
+              `Resource has been bloked by CORS policy: The 'Access-Control-Allow-Origin' header has a value ${origin} that is not equal to the supplied origin. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.`
+            ));
+          }
+          callback(null, true);
+        }
+      },
       handler: this.cancelAppeal,
       middlewares: [
         new ValidateDtoMiddleware(AnswerDto),
@@ -55,6 +91,17 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/canceled/all/appeals',
       method: HttpMethod.Patch,
+      optionsCors: {
+        origin: function (origin, callback) {
+          if (origin === undefined || !ORIGIN_HEADERS_LIST.includes(origin)) {
+            return callback(new HttpError(
+              StatusCodes.BAD_REQUEST,
+              `Resource has been bloked by CORS policy: The 'Access-Control-Allow-Origin' header has a value ${origin} that is not equal to the supplied origin. Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.`
+            ));
+          }
+          callback(null, true);
+        }
+      },
       handler: this.cancelAllAppeals,
       middlewares: [
         new ValidateDtoMiddleware(GeneralAnswerDto),
@@ -64,6 +111,18 @@ export class DispatcherController extends BaseController {
     this.addRoute({
       path: '/search/appeals',
       method: HttpMethod.Get,
+      optionsCors: {
+        origin: function (origin, callback) {
+          if (origin === undefined || !ORIGIN_HEADERS_LIST.includes(origin)) {
+            return callback(new HttpError(
+              StatusCodes.BAD_REQUEST,
+              `Resource has been bloked by CORS policy: The 'Access-Control-Allow-Origin' header has a value ${origin} that is not equal to the supplied origin.
+              Have the server send the header with a valid value, or, if an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.`
+            ));
+          }
+          callback(null, true);
+        }
+      },
       handler: this.getAppealsByData,
       middlewares: [
         new ValidateQueryMiddleware(QueryParamsDto)
