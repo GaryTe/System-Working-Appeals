@@ -4,6 +4,7 @@ export enum HttpMethod {
   Delete = 'delete',
   Patch = 'patch',
   Put = 'put',
+  Options = 'options'
 }
 
 export enum StatusAppeal {
